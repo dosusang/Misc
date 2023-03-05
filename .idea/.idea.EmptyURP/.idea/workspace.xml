@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="d937f262-f84f-48b9-83d7-02f8086b42a5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EmptyURP/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EmptyURP/.idea/indexLayout.xml" afterDir="false" />
+    <list default="true" id="d937f262-f84f-48b9-83d7-02f8086b42a5" name="Default Changelist" comment="mod">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EmptyURP/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EmptyURP/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EmptyURP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EmptyURP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Settings/UniversalRenderPipelineAsset.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/UniversalRenderPipelineAsset.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingSampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingSampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingTest.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingTest.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingTest.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingTest.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/GraphicsSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/GraphicsSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,9 +20,18 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--follow-tags" />
+        <option name="title" value="Current Branch" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Shader/RayMarching/VolumeLight.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/781AE7AC-455E-4981-A7A5-7FE4B3A3AE5B/7b/49e2427d/RenderTargetIdentifier.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/781AE7AC-455E-4981-A7A5-7FE4B3A3AE5B/cc/657d3c31/CommandBuffer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Unity/Hub/Editor/2021.3.6f1/Editor/Data/CGIncludes/UnityCG.cginc" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
@@ -31,7 +47,12 @@
       <option value="$PROJECT_DIR$/Assets/Shader/Depth/ShowSelf.shader" />
       <option value="$PROJECT_DIR$/Assets/Shader/Depth/ShowSelfDepth.shader" />
       <option value="$PROJECT_DIR$/Assets/Shader/Depth/TestDepth.shader" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/CustomRenderPassFeature.cs" />
+      <option value="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingHelper.cs" />
+      <option value="$PROJECT_DIR$/Packages/com.unity.render-pipelines.universal@7.7.1/Runtime/2D/PixelPerfectCamera.cs" />
+      <option value="$PROJECT_DIR$/Assets/Shader/RayMarching/VolumeLight.cs" />
       <option value="$PROJECT_DIR$/Assets/Shader/RayMarching/RayMarchingTest.shader" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/AutoRotate.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="2JDYbBCYziXu8SAJw82YSHzRTfd" />
@@ -42,6 +63,8 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34994584" />
+    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
     <property name="Discover.Launch.Via.Unity" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -57,10 +80,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="2296">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="2296" />
       <option name="selectedOptions">
         <list />
       </option>
@@ -81,8 +104,17 @@
       <workItem from="1677899699614" duration="1261000" />
       <workItem from="1677900991859" duration="479000" />
       <workItem from="1677901689057" duration="11542000" />
-      <workItem from="1678003887379" duration="7236000" />
+      <workItem from="1678003887379" duration="7339000" />
+      <workItem from="1678012152268" duration="13710000" />
     </task>
+    <task id="LOCAL-00001" summary="mod">
+      <created>1678011800803</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678011800803</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
@@ -97,8 +129,30 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="mod" />
+    <option name="LAST_COMMIT_MESSAGE" value="mod" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Shader/RayMarching/VolumeLight.cs</url>
+          <line>22</line>
+          <properties documentPath="D:\Projects\EmptyURP\Assets\Shader\RayMarching\VolumeLight.cs" initialLine="19" containingFunctionPresentation="method 'Execute'">
+            <startOffsets>
+              <option value="760" />
+            </startOffsets>
+            <endOffsets>
+              <option value="787" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

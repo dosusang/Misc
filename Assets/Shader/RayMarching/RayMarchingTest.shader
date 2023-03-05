@@ -2,8 +2,9 @@
 {
     Properties
     {
-        _BaseMap ("Example Texture", 2D) = "white" {}
-        _BaseColor ("Example Colour", Color) = (0, 0.66, 0.73, 1)
+        _MainTex ("Example Texture", 2D) = "white" {}
+        _CamColorTex ("Example Texture", 2D) = "white" {}
+        _DownSample("_DownSample", int) = 1
     }
     SubShader
     {
@@ -16,22 +17,46 @@
 
         HLSLINCLUDE
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+
+        struct Attributes
+        {
+            float4 positionOS : POSITION;
+            float2 uv : TEXCOORD0;
+
+        };
+
+        struct Varyings
+        {
+            float4 positionCS : SV_POSITION;
+            float2 uv : TEXCOORD0;
+        };
+
+        Varyings UnlitPassVertex(Attributes input)
+        {
+            Varyings output;
+
+            VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
+            output.positionCS = positionInputs.positionCS;
+            output.uv = input.uv;
+            return output;
+        }
 
         CBUFFER_START(UnityPerMaterial)
         float4 _BaseMap_ST;
         float4 _BaseColor;
+
         CBUFFER_END
         ENDHLSL
 
         Pass
         {
-            Name "Unlit"
-            zwrite off
+            Name "VolumeLight"
             blend one one
 
             HLSLPROGRAM
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+
             #pragma vertex UnlitPassVertex
             #pragma fragment UnlitPassFragment
 
@@ -39,19 +64,7 @@
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
 
-            struct Attributes
-            {
-                float4 positionOS : POSITION;
-            };
-
-            struct Varyings
-            {
-                float4 positionCS : SV_POSITION;
-                float3 positionWS : TEXCOORD0;
-            };
-
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
+            float _DownSample;
 
             float GetShadow(float3 positionWS)
             {
@@ -59,19 +72,9 @@
                 float shadow = MainLightRealtimeShadow(shadowCoord);
                 return shadow;
             }
-            
-            Varyings UnlitPassVertex(Attributes input)
-            {
-                Varyings output;
-
-                VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
-                output.positionCS = positionInputs.positionCS;
-                output.positionWS = positionInputs.positionWS;
-                return output;
-            }
 
             // 重建世界空间位置。
-            half3 GetWorldPos(half2 uv)
+            float3 GetWorldPos(float2 uv)
             {
                 #if UNITY_REVERSED_Z
                 real depth = SampleSceneDepth(uv);
@@ -83,27 +86,108 @@
                 return worldPos;
             }
 
-
-            half4 UnlitPassFragment(Varyings input) : SV_Target
+            float4 UnlitPassFragment(Varyings input) : SV_Target
             {
-                half4 color = 0;
-                half2 screenUV = input.positionCS.xy / _ScaledScreenParams.xy;
-                half3 endWorldPos = GetWorldPos(screenUV);
-                half3 curPos = _WorldSpaceCameraPos;
-                half maxLen = length(endWorldPos - curPos);
-                half3 dir = normalize(endWorldPos - curPos);
+                float4 color = 0;
+                float2 screenUV = input.positionCS.xy / (_ScaledScreenParams.xy * _DownSample);
+                float3 endWorldPos = GetWorldPos(screenUV);
+                float3 curPos = _WorldSpaceCameraPos;
+                float maxLen = length(endWorldPos - curPos);
+                float3 dir = normalize(endWorldPos - curPos);
 
-                int maxStep = 300;
-                half stepDt = 0.05;
-                half3 dt = 0;;
+                int maxStep = 150;
+                float stepDt = 0.05;
+                float3 dt = 0;;
 
-                for(int i = 0 ; i < maxStep; i++)
+                for (int i = 0; i < maxStep; i++)
                 {
                     dt += dir * stepDt;
-                    color += GetShadow(curPos + dt) * 0.003f;
-                    if(length(dt) > maxLen) break;
+                    if (length(dt) > maxLen) break;
+                    color += GetShadow(curPos + dt) * 0.02f;
                 }
-                    
+                color.rgb *= GetMainLight().color;
+                return smoothstep(0,5, color) * 0.5;
+            }
+            ENDHLSL
+        }
+
+        pass
+        {
+            Name "BlurH"
+            zwrite off
+
+            HLSLPROGRAM
+            #pragma vertex UnlitPassVertex
+            #pragma fragment UnlitPassFragment
+            sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
+
+            float4 UnlitPassFragment(Varyings input) : SV_Target
+            {
+                float4 color = 0;
+                const float kernel[] = {0.4,0.25,0.05};
+                for(int i = -2; i <=2 ; i++)
+                {
+                    color += kernel[abs(i)] * tex2D(_MainTex, input.uv + float2(0, i) * _MainTex_TexelSize.xy);
+                }
+                return color;
+            }
+            ENDHLSL
+        }
+        
+        
+        pass
+        {
+            Name "BlurV"
+            zwrite off
+
+            HLSLPROGRAM
+            #pragma vertex UnlitPassVertex
+            #pragma fragment UnlitPassFragment
+
+            sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
+            
+            sampler2D _CamColorTex;
+
+
+            float4 UnlitPassFragment(Varyings input) : SV_Target
+            {
+                float4 color = 0;
+                for(int i = -2; i <=2 ; i++)
+                {
+                    const float kernel[] = {0.4,0.25,0.05};
+                    color += kernel[abs(i)] * tex2D(_MainTex, input.uv + float2(i,0) * _MainTex_TexelSize.xy);
+                }
+                return color;
+            }
+            ENDHLSL
+        }
+        
+        pass
+        {
+            Name "BlurVAndBlend"
+            zwrite off
+            Blend One One
+
+            HLSLPROGRAM
+            #pragma vertex UnlitPassVertex
+            #pragma fragment UnlitPassFragment
+
+            sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
+            
+            sampler2D _CamColorTex;
+
+
+            float4 UnlitPassFragment(Varyings input) : SV_Target
+            {
+                float4 color = 0;
+                for(int i = -2; i <=2 ; i++)
+                {
+                    const float kernel[] = {0.4,0.25,0.05};
+                    color += kernel[abs(i)] * tex2D(_MainTex, input.uv + float2(i,0) * _MainTex_TexelSize.xy);
+                }
                 return color;
             }
             ENDHLSL
