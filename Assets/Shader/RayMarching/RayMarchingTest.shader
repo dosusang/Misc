@@ -5,6 +5,8 @@
         _MainTex ("Example Texture", 2D) = "white" {}
         _CamColorTex ("Example Texture", 2D) = "white" {}
         _DownSample("_DownSample", int) = 1
+        _UpdateChannel("_DownSample", int) = 1
+
     }
     SubShader
     {
@@ -22,13 +24,18 @@
         {
             float4 positionOS : POSITION;
             float2 uv : TEXCOORD0;
-
         };
 
         struct Varyings
         {
             float4 positionCS : SV_POSITION;
-            float2 uv : TEXCOORD0;
+            float2 uv: TEXCOORD0;
+        };
+
+        struct Varyings2
+        {
+            float4 positionCS : SV_POSITION;
+            float4 uvAndPosSS : TEXCOORD0;
         };
 
         Varyings UnlitPassVertex(Attributes input)
@@ -37,6 +44,7 @@
 
             VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
             output.positionCS = positionInputs.positionCS;
+
             output.uv = input.uv;
             return output;
         }
@@ -44,6 +52,7 @@
         CBUFFER_START(UnityPerMaterial)
         float4 _BaseMap_ST;
         float4 _BaseColor;
+        uint _UpdateChannel;
 
         CBUFFER_END
         ENDHLSL
@@ -51,7 +60,7 @@
         Pass
         {
             Name "VolumeLight"
-            blend one one
+            blend one zero
 
             HLSLPROGRAM
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -86,24 +95,30 @@
                 return worldPos;
             }
 
-            float4 UnlitPassFragment(Varyings input) : SV_Target
+            float4 UnlitPassFragment(Varyings2 input) : SV_Target
             {
                 float4 color = 0;
                 float2 screenUV = input.positionCS.xy / (_ScaledScreenParams.xy * _DownSample);
+                float2 channel = floor(input.positionCS);
+                // 棋盘格刷新
+                clip(channel.y%2 * channel.x%2 + (channel.y+1)%2 * (channel.x+1)%2 - 0.1f);
+                
                 float3 endWorldPos = GetWorldPos(screenUV);
                 float3 curPos = _WorldSpaceCameraPos;
-                float maxLen = length(endWorldPos - curPos);
+                float maxLen = min(length(endWorldPos - curPos), 20);
                 float3 dir = normalize(endWorldPos - curPos);
 
-                int maxStep = 150;
-                float stepDt = 0.05;
+                uint maxStep = 300;
+                float stepDt = 0.025;
+                float intensityPerStep = 0.015f;
                 float3 dt = 0;;
 
-                for (int i = 0; i < maxStep; i++)
+                for (uint i = 0; i < maxStep; i++)
                 {
+                    stepDt *= 1.02f;
                     dt += dir * stepDt;
                     if (length(dt) > maxLen) break;
-                    color += GetShadow(curPos + dt) * 0.02f;
+                    color += GetShadow(curPos + dt) * intensityPerStep;
                 }
                 color.rgb *= GetMainLight().color;
                 return smoothstep(0,5, color) * 0.5;
