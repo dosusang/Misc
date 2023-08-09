@@ -99,6 +99,7 @@
             {
                 float4 color = 0;
                 float2 screenUV = input.positionCS.xy / (_ScaledScreenParams.xy * _DownSample);
+                
                 float2 channel = floor(input.positionCS);
                 // 棋盘格刷新
                 clip(channel.y%2 * channel.x%2 + (channel.y+1)%2 * (channel.x+1)%2 - 0.1f);

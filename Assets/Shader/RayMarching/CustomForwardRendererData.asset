@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fdc59e80039eb8418e6fdfbaf85468c, type: 3}
-  m_Name: NewVolumeLight
+  m_Name: RayMarchingVolumeLight
   m_EditorClassIdentifier: 
   m_Active: 1
   VolumeLightMat: {fileID: 2100000, guid: 3b809f17d89ab5444a32efc38b8aa96e, type: 2}
-  DownSample: 3
+  DownSample: 1
   BlurLoop: 0
 --- !u!114 &11400000
 MonoBehaviour:

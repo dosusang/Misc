@@ -88,6 +88,8 @@ public class VolumeLight : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
+        if(Time.time %6 > 3) return;
+        
         m_ScriptablePass.VolumeLightMat = VolumeLightMat;
         m_ScriptablePass.source = renderer.cameraColorTarget;
         m_ScriptablePass.DownSample = DownSample;
